@@ -2,8 +2,15 @@ services:
   service1:
     container_name: "CED"
     image: "node:latest"
+    ports:
+      - "3000:3000"
     volumes:
       - "volume1:/data"
+    depends_on:
+      service2: 
+        condition: service_healthy
+    stdin_open: true
+    tty: true
   service2:
     container_name: "PIZDA"
     image: "mysql"
@@ -11,6 +18,12 @@ services:
       - "./cartella:/data"
     environment:
       - MYSQL_ROOT_PASSWORD=cisco
+    healthckeck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "root", "--password=cisco"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
 
 volumes:
   volume1:
