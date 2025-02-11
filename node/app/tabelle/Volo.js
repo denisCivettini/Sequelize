@@ -1,14 +1,14 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('./config');
-const { table } = require('console');
+const { Model,DataTypes } = require("sequelize")
+const sequelize = require("../config")
 
-class Volo extends Model { }
+class Volo extends Model {}
 
 Volo.init({
     id: {
-        type: DataTypes.SMALLINT,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
+        allowNull: false
     },
     orariopartenza: {
         type: DataTypes.TIME
@@ -16,18 +16,19 @@ Volo.init({
     durataminuti: {
         type: DataTypes.SMALLINT
     },
-    fkaereoportopartenza: {
+    fkaeroportopartenza: {
         type: DataTypes.SMALLINT,
         allowNull: false
     },
-    fkaereoportoarrivo: {
+    fkaeroportoarrivo: {
         type: DataTypes.SMALLINT,
         allowNull: false
     }
-}, {
+},{
     sequelize,
-    modelName: 'volo',
-    tableName: 'volo',
-});
+    modelName: "Voli",
+    tableName: "Voli",
+    timestamps: false
+})
 
 module.exports = Volo;

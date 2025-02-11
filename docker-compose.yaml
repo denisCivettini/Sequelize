@@ -1,29 +1,49 @@
 services:
-  service1:
-    container_name: "CED"
-    image: "node:latest"
+  node:
+    container_name: "node"
+    build: ./node
     ports:
       - "3000:3000"
-    volumes:
-      - "volume1:/data"
+    networks:
+      - rete
     depends_on:
-      service2: 
+      mysql:
         condition: service_healthy
     stdin_open: true
     tty: true
-  service2:
-    container_name: "PIZDA"
-    image: "mysql"
-    volumes:
-      - "./cartella:/data"
+  
+  mysql:
+    container_name: "mysql"
+    build: ./mysql
     environment:
       - MYSQL_ROOT_PASSWORD=cisco
-    healthckeck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "root", "--password=cisco"]
+      - MYSQL_DATABASE=compagniaaerea
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root","--password=root"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 40s
+      start_period: 20s
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - rete
+  
+  nginx:
+    container_name: "nginx"
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - node
+
 
 volumes:
-  volume1:
+  mysql-data:
+
+networks:
+  rete:
+    driver: bridge
+  
+
+    
